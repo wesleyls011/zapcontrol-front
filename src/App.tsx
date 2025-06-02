@@ -10,6 +10,7 @@ import Estoque from "./pages/Estoque"
 import Cardapio from "./pages/Cardapio"
 import Chat from "./pages/Chat"
 import Pedidos from "./pages/Pedidos"
+import './App.css'
 
 function AppContent() {
   const [sidebarOpen, setSidebarOpen] = useState(false)

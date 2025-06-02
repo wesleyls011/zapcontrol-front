@@ -81,15 +81,15 @@ const Pedidos: React.FC = () => {
   const getStatusColor = (status: string) => {
     switch (status) {
       case "pendente":
-        return "bg-yellow-100 text-yellow-800 border-yellow-200"
+        return "bg-apple-green-200 text-apple-green-800 border-apple-green-200"
       case "em_preparo":
-        return "bg-blue-100 text-blue-800 border-blue-200"
+        return "bg-office-green-200 text-office-green-800 border-office-green-200"
       case "finalizado":
-        return "bg-green-100 text-green-800 border-green-200"
+        return "bg-green-200 text-green-800 border-green-200"
       case "cancelado":
-        return "bg-red-100 text-red-800 border-red-200"
+        return "bg-red-200 text-red-800 border-red-200"
       default:
-        return "bg-gray-100 text-gray-800 border-gray-200"
+        return "bg-gray-200 text-gray-800 border-gray-200"
     }
   }
 
@@ -175,7 +175,7 @@ const Pedidos: React.FC = () => {
                   {pedido.status === "pendente" && (
                     <button
                       onClick={() => updateStatus(pedido.id, "em_preparo")}
-                      className="flex-1 bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 flex items-center justify-center gap-2"
+                      className="flex-1 bg-office-green-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 flex items-center justify-center gap-2"
                     >
                       <ClockIcon className="w-4 h-4" />
                       Iniciar Preparo

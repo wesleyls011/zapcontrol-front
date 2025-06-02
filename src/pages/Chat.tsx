@@ -63,13 +63,13 @@ const Chat: React.FC = () => {
   const getStatusColor = (status: string) => {
     switch (status) {
       case "pendente":
-        return "bg-yellow-100 text-yellow-800"
+        return "bg-apple-green-200 text-apple-green-800"
       case "em_preparo":
-        return "bg-blue-100 text-blue-800"
+        return "bg-office-green-200 text-office-green-800"
       case "finalizado":
-        return "bg-green-100 text-green-800"
+        return "bg-green-200 text-green-800"
       default:
-        return "bg-gray-100 text-gray-800"
+        return "bg-gray-200 text-gray-800"
     }
   }
 
@@ -141,14 +141,14 @@ const Chat: React.FC = () => {
         </div>
       </div>
 
-      <div className="mt-6 bg-blue-50 border border-blue-200 rounded-lg p-4">
+      <div className="mt-6 bg-green-50 border border-green-200 rounded-lg p-4">
         <div className="flex items-start">
           <div className="flex-shrink-0">
-            <ChatBubbleLeftRightIcon className="w-5 h-5 text-blue-600" />
+            <ChatBubbleLeftRightIcon className="w-5 h-5 text-green-600" />
           </div>
           <div className="ml-3">
-            <h3 className="text-sm font-medium text-blue-800">Integração com WhatsApp</h3>
-            <p className="mt-1 text-sm text-blue-700">
+            <h3 className="text-sm font-medium text-green-800">Integração com WhatsApp</h3>
+            <p className="mt-1 text-sm text-green-700">
               Esta seção mostra apenas a visualização das conversas. O chatbot com IA processa automaticamente os
               pedidos e os envia para o sistema de pedidos.
             </p>
