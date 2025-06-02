@@ -24,7 +24,7 @@ const Cardapio: React.FC = () => {
       descricao: "Hambúrguer artesanal, queijo, alface, tomate e molho especial",
       preco: 18.9,
       categoria: "Lanches",
-      imagem: "/placeholder.svg?height=200&width=200",
+      imagem: "https://t3.ftcdn.net/jpg/00/84/28/54/360_F_84285488_CaWrmiQ9xWJXFpCPMHD1r2ZYAzcESfkU.jpg",
       ativo: true,
     },
     {
@@ -33,7 +33,7 @@ const Cardapio: React.FC = () => {
       descricao: "Hambúrguer, bacon crocante, queijo, alface e tomate",
       preco: 22.9,
       categoria: "Lanches",
-      imagem: "/placeholder.svg?height=200&width=200",
+      imagem: "https://images.unsplash.com/photo-1550547660-d9450f859349?auto=format&fit=crop&w=600&q=80",
       ativo: true,
     },
     {
@@ -42,7 +42,7 @@ const Cardapio: React.FC = () => {
       descricao: "Refrigerante gelado",
       preco: 5.5,
       categoria: "Bebidas",
-      imagem: "/placeholder.svg?height=200&width=200",
+      imagem: "https://img.cdndsgni.com/preview/10000392.jpg",
       ativo: true,
     },
     {
@@ -51,7 +51,7 @@ const Cardapio: React.FC = () => {
       descricao: "Porção de batata frita crocante",
       preco: 12.9,
       categoria: "Acompanhamentos",
-      imagem: "/placeholder.svg?height=200&width=200",
+      imagem: "https://beagaembalagem.com.br/wp-content/uploads/2021/06/batata-frita.jpeg",
       ativo: false,
     },
     {
@@ -60,7 +60,7 @@ const Cardapio: React.FC = () => {
       descricao: "Cremoso milkshake de chocolate com chantilly",
       preco: 14.9,
       categoria: "Sobremesas",
-      imagem: "/placeholder.svg?height=200&width=200",
+      imagem: "https://img.freepik.com/fotos-premium/milkshake-de-chocolate-com-chantilly_434193-2833.jpg",
       ativo: true,
     },
   ])
