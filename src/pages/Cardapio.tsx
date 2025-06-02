@@ -148,7 +148,7 @@ const Cardapio: React.FC = () => {
                 <h3 className="text-lg font-semibold text-gray-900">{item.nome}</h3>
                 <span
                   className={`px-2 py-1 rounded-full text-xs font-medium ${
-                    item.ativo ? "bg-green-100 text-green-800" : "bg-red-100 text-red-800"
+                    item.ativo ? "bg-green-200 text-green-800" : "bg-red-100 text-red-800"
                   }`}
                 >
                   {item.ativo ? "Ativo" : "Inativo"}
@@ -157,12 +157,12 @@ const Cardapio: React.FC = () => {
               <p className="text-gray-600 text-sm mb-2">{item.descricao}</p>
               <div className="flex justify-between items-center mb-3">
                 <span className="text-lg font-bold text-apple-green">R$ {item.preco.toFixed(2)}</span>
-                <span className="text-sm text-gray-500 bg-gray-100 px-2 py-1 rounded">{item.categoria}</span>
+                <span className="text-sm text-office-green-800 bg-office-green-200 px-2 py-1 rounded">{item.categoria}</span>
               </div>
               <div className="flex gap-2">
                 <button
                   onClick={() => openModal(item)}
-                  className="flex-1 bg-gray-100 text-gray-700 px-3 py-2 rounded text-sm hover:bg-gray-200 flex items-center justify-center gap-1"
+                  className="flex-1 bg-green-100 text-green-800 px-3 py-2 rounded text-sm hover:bg-gray-200 flex items-center justify-center gap-1"
                 >
                   <PencilIcon className="w-4 h-4" />
                   Editar
@@ -172,7 +172,7 @@ const Cardapio: React.FC = () => {
                   className={`flex-1 px-3 py-2 rounded text-sm flex items-center justify-center gap-1 ${
                     item.ativo
                       ? "bg-red-100 text-red-700 hover:bg-red-200"
-                      : "bg-green-100 text-green-700 hover:bg-green-200"
+                      : "bg-green-w00 text-green-700 hover:bg-green-200"
                   }`}
                 >
                   {item.ativo ? (

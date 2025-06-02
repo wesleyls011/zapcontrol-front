@@ -1,0 +1,83 @@
+:root {
+  --night: #0d0a0b;
+  --charcoal: #454955;
+  --magnolia: #f3eff5;
+  --apple-green: #72b01d;
+  --office-green: #3f7d20;
+}
+
+/* Background colors */
+.bg-night {
+  background-color: var(--night);
+}
+
+.bg-charcoal {
+  background-color: var(--charcoal);
+}
+
+.bg-magnolia {
+  background-color: var(--magnolia);
+}
+
+.bg-apple-green {
+  background-color: var(--apple-green);
+}
+
+.bg-office-green {
+  background-color: var(--office-green);
+}
+
+/* Text colors */
+.text-night {
+  color: var(--night);
+}
+
+.text-charcoal {
+  color: var(--charcoal);
+}
+
+.text-magnolia {
+  color: var(--magnolia);
+}
+
+.text-apple-green {
+  color: var(--apple-green);
+}
+
+.text-office-green {
+  color: var(--office-green);
+}
+
+/* Border colors */
+.border-night {
+  border-color: var(--night);
+}
+
+.border-charcoal {
+  border-color: var(--charcoal);
+}
+
+.border-magnolia {
+  border-color: var(--magnolia);
+}
+
+.border-apple-green {
+  border-color: var(--apple-green);
+}
+
+.border-office-green {
+  border-color: var(--office-green);
+}
+
+/* Optional: hover states */
+.hover\:bg-apple-green:hover {
+  background-color: var(--apple-green);
+}
+
+.hover\:bg-office-green:hover {
+  background-color: var(--office-green);
+}
+
+.hover\:text-office-green:hover {
+  color: var(--office-green);
+}
