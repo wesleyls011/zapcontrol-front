@@ -3,20 +3,13 @@
 import type React from "react"
 import { useState } from "react"
 import { PlusIcon, PencilIcon, ExclamationTriangleIcon } from "@heroicons/react/24/outline"
-import Modal from "../components/Modal"
+import AddEstoque, { type EstoqueFormData, type EstoqueItem as AddEstoqueItem } from "./AddEstoque"
 import RoleGuard from "../components/RoleGuard"
 
-interface EstoqueItem {
-  id: number
-  nome: string
-  categoria: string
-  quantidade: number
-  unidade: string
-  minimo: number
-}
+
 
 const Estoque: React.FC = () => {
-  const [items, setItems] = useState<EstoqueItem[]>([
+  const [items, setItems] = useState<AddEstoqueItem[]>([
     { id: 1, nome: "Pão de Hambúrguer", categoria: "Pães", quantidade: 50, unidade: "unid", minimo: 10 },
     { id: 2, nome: "Carne Bovina", categoria: "Carnes", quantidade: 3, unidade: "kg", minimo: 5 },
     { id: 3, nome: "Queijo Cheddar", categoria: "Laticínios", quantidade: 2, unidade: "kg", minimo: 3 },
@@ -26,51 +19,38 @@ const Estoque: React.FC = () => {
   ])
 
   const [modalOpen, setModalOpen] = useState(false)
-  const [editingItem, setEditingItem] = useState<EstoqueItem | null>(null)
-  const [formData, setFormData] = useState({
-    nome: "",
-    categoria: "",
-    quantidade: 0,
-    unidade: "unid",
-    minimo: 0,
-  })
+  const [editingItem, setEditingItem] = useState<AddEstoqueItem | null>(null)
+  const [currentMode, setCurrentMode] = useState<'add' | 'edit'>('add');
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault()
+  const handleSaveItem = (data: EstoqueFormData, id?: number) => {
+    if (id !== undefined && editingItem && editingItem.id === id) {
 
-    if (editingItem) {
-      setItems(items.map((item) => (item.id === editingItem.id ? { ...editingItem, ...formData } : item)))
+      setItems(items.map((item) => (item.id === id ? { ...item, ...data, id } : item)));
     } else {
-      const newItem: EstoqueItem = {
+      const newItemWithId: AddEstoqueItem = {
         id: Date.now(),
-        ...formData,
-      }
-      setItems([...items, newItem])
+        ...data,
+      };
+      setItems([...items, newItemWithId]);
     }
 
-    setModalOpen(false)
-    setEditingItem(null)
-    setFormData({ nome: "", categoria: "", quantidade: 0, unidade: "unid", minimo: 0 })
-  }
+    setModalOpen(false);
+    setEditingItem(null);
+  };
 
-  const openModal = (item?: EstoqueItem) => {
+  const openModal = (item?: AddEstoqueItem) => {
     if (item) {
-      setEditingItem(item)
-      setFormData({
-        nome: item.nome,
-        categoria: item.categoria,
-        quantidade: item.quantidade,
-        unidade: item.unidade,
-        minimo: item.minimo,
-      })
-    } else {
-      setEditingItem(null)
-      setFormData({ nome: "", categoria: "", quantidade: 0, unidade: "unid", minimo: 0 })
-    }
-    setModalOpen(true)
-  }
+      setEditingItem(item);
+      setCurrentMode('edit');
 
-  const getStatusColor = (item: EstoqueItem) => {
+    } else {
+      setEditingItem(null);
+      setCurrentMode('add');
+    }
+    setModalOpen(true);
+  };
+
+  const getStatusColor = (item: AddEstoqueItem) => {
     if (item.quantidade <= item.minimo) return "text-red-600 bg-red-50"
     if (item.quantidade <= item.minimo * 2) return "text-yellow-600 bg-yellow-50"
     return "text-green-600 bg-green-50"
@@ -152,92 +132,13 @@ const Estoque: React.FC = () => {
         </table>
       </div>
 
-      <Modal
+      <AddEstoque
         isOpen={modalOpen}
         onClose={() => setModalOpen(false)}
-        title={editingItem ? "Editar Item" : "Adicionar Item"}
-      >
-        <form onSubmit={handleSubmit} className="space-y-4">
-          <div>
-            <label className="block text-sm font-medium text-gray-700">Nome</label>
-            <input
-              type="text"
-              required
-              value={formData.nome}
-              onChange={(e) => setFormData({ ...formData, nome: e.target.value })}
-              className="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-apple-green focus:border-apple-green"
-            />
-          </div>
-
-          <div>
-            <label className="block text-sm font-medium text-gray-700">Categoria</label>
-            <input
-              type="text"
-              required
-              value={formData.categoria}
-              onChange={(e) => setFormData({ ...formData, categoria: e.target.value })}
-              className="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-apple-green focus:border-apple-green"
-            />
-          </div>
-
-          <div className="grid grid-cols-2 gap-4">
-            <div>
-              <label className="block text-sm font-medium text-gray-700">Quantidade</label>
-              <input
-                type="number"
-                required
-                min="0"
-                value={formData.quantidade}
-                onChange={(e) => setFormData({ ...formData, quantidade: Number(e.target.value) })}
-                className="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-apple-green focus:border-apple-green"
-              />
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium text-gray-700">Unidade</label>
-              <select
-                value={formData.unidade}
-                onChange={(e) => setFormData({ ...formData, unidade: e.target.value })}
-                className="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-apple-green focus:border-apple-green"
-              >
-                <option value="unid">Unidade</option>
-                <option value="kg">Quilograma</option>
-                <option value="g">Grama</option>
-                <option value="l">Litro</option>
-                <option value="ml">Mililitro</option>
-              </select>
-            </div>
-          </div>
-
-          <div>
-            <label className="block text-sm font-medium text-gray-700">Quantidade Mínima</label>
-            <input
-              type="number"
-              required
-              min="0"
-              value={formData.minimo}
-              onChange={(e) => setFormData({ ...formData, minimo: Number(e.target.value) })}
-              className="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-apple-green focus:border-apple-green"
-            />
-          </div>
-
-          <div className="flex justify-end gap-3 pt-4">
-            <button
-              type="button"
-              onClick={() => setModalOpen(false)}
-              className="px-4 py-2 text-sm font-medium text-gray-700 bg-gray-100 rounded-md hover:bg-gray-200"
-            >
-              Cancelar
-            </button>
-            <button
-              type="submit"
-              className="px-4 py-2 text-sm font-medium text-white bg-apple-green rounded-md hover:bg-apple-green-700"
-            >
-              {editingItem ? "Atualizar" : "Adicionar"}
-            </button>
-          </div>
-        </form>
-      </Modal>
+        onSubmit={handleSaveItem}
+        initialData={editingItem}
+        mode={currentMode}
+      />
     </div>
   )
 }
