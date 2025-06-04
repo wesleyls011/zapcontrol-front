@@ -1,10 +1,11 @@
 "use client"
-
+import axios from "axios"
 import type React from "react"
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { PlusIcon, PencilIcon, EyeSlashIcon, EyeIcon } from "@heroicons/react/24/outline"
 import Modal from "../components/Modal"
 import RoleGuard from "../components/RoleGuard"
+import FormCardapio from "@/components/FormCardapio"
 
 interface MenuItem {
   id: number
@@ -17,53 +18,7 @@ interface MenuItem {
 }
 
 const Cardapio: React.FC = () => {
-  const [items, setItems] = useState<MenuItem[]>([
-    {
-      id: 1,
-      nome: "X-Burger Clássico",
-      descricao: "Hambúrguer artesanal, queijo, alface, tomate e molho especial",
-      preco: 18.9,
-      categoria: "Lanches",
-      imagem: "https://t3.ftcdn.net/jpg/00/84/28/54/360_F_84285488_CaWrmiQ9xWJXFpCPMHD1r2ZYAzcESfkU.jpg",
-      ativo: true,
-    },
-    {
-      id: 2,
-      nome: "X-Bacon",
-      descricao: "Hambúrguer, bacon crocante, queijo, alface e tomate",
-      preco: 22.9,
-      categoria: "Lanches",
-      imagem: "https://images.unsplash.com/photo-1550547660-d9450f859349?auto=format&fit=crop&w=600&q=80",
-      ativo: true,
-    },
-    {
-      id: 3,
-      nome: "Coca-Cola 350ml",
-      descricao: "Refrigerante gelado",
-      preco: 5.5,
-      categoria: "Bebidas",
-      imagem: "https://img.cdndsgni.com/preview/10000392.jpg",
-      ativo: true,
-    },
-    {
-      id: 4,
-      nome: "Batata Frita",
-      descricao: "Porção de batata frita crocante",
-      preco: 12.9,
-      categoria: "Acompanhamentos",
-      imagem: "https://beagaembalagem.com.br/wp-content/uploads/2021/06/batata-frita.jpeg",
-      ativo: false,
-    },
-    {
-      id: 5,
-      nome: "Milkshake de Chocolate",
-      descricao: "Cremoso milkshake de chocolate com chantilly",
-      preco: 14.9,
-      categoria: "Sobremesas",
-      imagem: "https://img.freepik.com/fotos-premium/milkshake-de-chocolate-com-chantilly_434193-2833.jpg",
-      ativo: true,
-    },
-  ])
+  const [items, setItems] = useState<MenuItem[]>([])
 
   const [modalOpen, setModalOpen] = useState(false)
   const [editingItem, setEditingItem] = useState<MenuItem | null>(null)
@@ -76,24 +31,61 @@ const Cardapio: React.FC = () => {
     ativo: true,
   })
 
-  const categorias = ["Lanches", "Bebidas", "Acompanhamentos", "Sobremesas"]
-
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault()
-
-    if (editingItem) {
-      setItems(items.map((item) => (item.id === editingItem.id ? { ...editingItem, ...formData } : item)))
-    } else {
-      const newItem: MenuItem = {
-        id: Date.now(),
-        ...formData,
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await axios.get("http://localhost:4000/cardapio")
+        console.log(response.data)
+        const produtosDoCardapio: MenuItem[] = response.data.map((item: any) => ({
+          id: item.id,
+          nome: item.nome,
+          preco: item.preco,
+          ativo: item.ativo,
+          categoria: item.categoria,
+          imagem: item.imagem ?? "",
+          descricao: item.descricao ?? "",
+        }))
+        setItems(produtosDoCardapio)
+      } catch (error) {
+        console.error("Erro ao buscar os dados do cardápio:", error)
       }
-      setItems([...items, newItem])
     }
 
-    setModalOpen(false)
-    setEditingItem(null)
-    setFormData({ nome: "", descricao: "", preco: 0, categoria: "", imagem: "", ativo: true })
+    fetchData()
+  }, [])
+
+  const categorias = ["Lanche", "Bebida", "Acompanhamento", "Sobremesa", "Salgado"]
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault()
+
+    try {
+      if (editingItem) {
+        const response = await axios.put(`http://localhost:4000/cardapio/${editingItem.id}`, formData)
+        console.log("Item atualizado:", response.data)
+        setItems(items.map((item) => (item.id === editingItem.id ? response.data : item)))
+      } else {
+        const response = await axios.post("http://localhost:4000/cardapio", formData)
+        console.log("Item adicionado:", response.data)
+        const newItem: MenuItem = {
+          id: response.data.id,
+          nome: response.data.nome,
+          preco: response.data.preco,
+          descricao: response.data.descricao ?? "",
+          categoria: response.data.categoria,
+          imagem: response.data.imagem ?? "",
+          ativo: response.data.ativo,
+        }
+        setItems([...items, newItem])
+      }
+    } catch (error) {
+      console.error("Erro ao salvar o item:", error)
+      alert("Ocorreu um erro ao salvar o item. Por favor, tente novamente.")
+    } finally {
+      setModalOpen(false)
+      setEditingItem(null)
+      setFormData({ nome: "", descricao: "", preco: 0, categoria: "", imagem: "", ativo: true })
+    }
   }
 
   const openModal = (item?: MenuItem) => {
@@ -147,9 +139,7 @@ const Cardapio: React.FC = () => {
               <div className="flex justify-between items-start mb-2">
                 <h3 className="text-lg font-semibold text-gray-900">{item.nome}</h3>
                 <span
-                  className={`px-2 py-1 rounded-full text-xs font-medium ${
-                    item.ativo ? "bg-green-200 text-green-800" : "bg-red-100 text-red-800"
-                  }`}
+                  className={`px-2 py-1 rounded-full text-xs font-medium ${item.ativo ? "bg-green-200 text-green-800" : "bg-red-100 text-red-800"}`}
                 >
                   {item.ativo ? "Ativo" : "Inativo"}
                 </span>
@@ -169,11 +159,10 @@ const Cardapio: React.FC = () => {
                 </button>
                 <button
                   onClick={() => toggleStatus(item.id)}
-                  className={`flex-1 px-3 py-2 rounded text-sm flex items-center justify-center gap-1 ${
-                    item.ativo
-                      ? "bg-red-100 text-red-700 hover:bg-red-200"
-                      : "bg-green-w00 text-green-700 hover:bg-green-200"
-                  }`}
+                  className={`flex-1 px-3 py-2 rounded text-sm flex items-center justify-center gap-1 ${item.ativo
+                    ? "bg-red-100 text-red-700 hover:bg-red-200"
+                    : "bg-green-100 text-green-700 hover:bg-green-200"
+                    }`}
                 >
                   {item.ativo ? (
                     <>
@@ -198,101 +187,14 @@ const Cardapio: React.FC = () => {
         onClose={() => setModalOpen(false)}
         title={editingItem ? "Editar Item" : "Adicionar Item"}
       >
-        <form onSubmit={handleSubmit} className="space-y-4">
-          <div>
-            <label className="block text-sm font-medium text-gray-700">Nome</label>
-            <input
-              type="text"
-              required
-              value={formData.nome}
-              onChange={(e) => setFormData({ ...formData, nome: e.target.value })}
-              className="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-apple-green focus:border-apple-green"
-            />
-          </div>
-
-          <div>
-            <label className="block text-sm font-medium text-gray-700">Descrição</label>
-            <textarea
-              required
-              value={formData.descricao}
-              onChange={(e) => setFormData({ ...formData, descricao: e.target.value })}
-              rows={3}
-              className="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-apple-green focus:border-apple-green"
-            />
-          </div>
-
-          <div className="grid grid-cols-2 gap-4">
-            <div>
-              <label className="block text-sm font-medium text-gray-700">Preço (R$)</label>
-              <input
-                type="number"
-                required
-                min="0"
-                step="0.01"
-                value={formData.preco}
-                onChange={(e) => setFormData({ ...formData, preco: Number(e.target.value) })}
-                className="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-apple-green focus:border-apple-green"
-              />
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium text-gray-700">Categoria</label>
-              <select
-                required
-                value={formData.categoria}
-                onChange={(e) => setFormData({ ...formData, categoria: e.target.value })}
-                className="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-apple-green focus:border-apple-green"
-              >
-                <option value="">Selecione...</option>
-                {categorias.map((cat) => (
-                  <option key={cat} value={cat}>
-                    {cat}
-                  </option>
-                ))}
-              </select>
-            </div>
-          </div>
-
-          <div>
-            <label className="block text-sm font-medium text-gray-700">URL da Imagem</label>
-            <input
-              type="url"
-              value={formData.imagem}
-              onChange={(e) => setFormData({ ...formData, imagem: e.target.value })}
-              placeholder="/placeholder.svg?height=200&width=200"
-              className="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-apple-green focus:border-apple-green"
-            />
-          </div>
-
-          <div className="flex items-center">
-            <input
-              type="checkbox"
-              id="ativo"
-              checked={formData.ativo}
-              onChange={(e) => setFormData({ ...formData, ativo: e.target.checked })}
-              className="h-4 w-4 text-apple-green focus:ring-apple-green border-gray-300 rounded"
-            />
-            <label htmlFor="ativo" className="ml-2 block text-sm text-gray-900">
-              Item ativo no cardápio
-            </label>
-          </div>
-
-          <div className="flex justify-end gap-3 pt-4">
-            <button
-              type="button"
-              onClick={() => setModalOpen(false)}
-              className="px-4 py-2 text-sm font-medium text-gray-700 bg-gray-100 rounded-md hover:bg-gray-200"
-            >
-              Cancelar
-            </button>
-            <button
-              type="submit"
-              className="px-4 py-2 text-sm font-medium text-white bg-apple-green rounded-md hover:bg-apple-green-700"
-            >
-              {editingItem ? "Atualizar" : "Adicionar"}
-            </button>
-          </div>
-        </form>
+        <FormCardapio
+          formData={formData}
+          setFormData={setFormData}
+          categorias={categorias}
+          onSubmit={handleSubmit}
+          onCancel={() => setModalOpen(false)}
+          isEditing={!!editingItem}
+        />
       </Modal>
     </div>
   )
