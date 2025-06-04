@@ -9,6 +9,10 @@ interface UserProfile {
   id: number;
   nome: string;
   email: string;
+  telefone: string;
+  cpf: string;
+  localizacao: string;
+  plano: string;
 }
 
 const Perfil: React.FC = () => {
@@ -16,12 +20,20 @@ const Perfil: React.FC = () => {
     id: 1,
     nome: "João da Silva",
     email: "joao@email.com",
+    telefone: "(11) 98765-4321",
+    cpf: "123.456.789-00",
+    localizacao: "São Paulo, SP",
+    plano: "Premium",
   });
 
   const [modalOpen, setModalOpen] = useState(false);
   const [formData, setFormData] = useState({
     nome: user.nome,
     email: user.email,
+    telefone: user.telefone,
+    cpf: user.cpf,
+    localizacao: user.localizacao,
+    plano: user.plano,
     senha: "",
     confirmarSenha: "",
   });
@@ -30,6 +42,10 @@ const Perfil: React.FC = () => {
     setFormData({
       nome: user.nome,
       email: user.email,
+      telefone: user.telefone,
+      cpf: user.cpf,
+      localizacao: user.localizacao,
+      plano: user.plano,
       senha: "",
       confirmarSenha: "",
     });
@@ -48,9 +64,27 @@ const Perfil: React.FC = () => {
       id: user.id,
       nome: formData.nome,
       email: formData.email,
+      telefone: formData.telefone,
+      cpf: formData.cpf,
+      localizacao: formData.localizacao,
+      plano: formData.plano,
     });
 
     setModalOpen(false);
+  };
+
+  // Função para descrever os planos
+  const getPlanoDescricao = (plano: string) => {
+    switch (plano) {
+      case "Free":
+        return "Plano gratuito com recursos limitados.";
+      case "Premium":
+        return "Plano pago com acesso a todos os recursos, incluindo suporte prioritário.";
+      case "Enterprise":
+        return "Plano para grandes empresas com recursos exclusivos e suporte dedicado.";
+      default:
+        return "";
+    }
   };
 
   return (
@@ -71,25 +105,49 @@ const Perfil: React.FC = () => {
         <div className="pt-4 border-t border-gray-100">
           <dl className="space-y-4">
             <div>
-              <dt className="text-sm font-medium text-gray-500">Nome</dt>
-              <dd className="text-sm text-gray-900">{user.nome}</dd>
+              <dt className="text-sm font-medium text-gray-500">Telefone</dt>
+              <dd className="text-sm text-gray-900">{user.telefone}</dd>
             </div>
             <div>
-              <dt className="text-sm font-medium text-gray-500">Email</dt>
-              <dd className="text-sm text-gray-900">{user.email}</dd>
+              <dt className="text-sm font-medium text-gray-500">CPF</dt>
+              <dd className="text-sm text-gray-900">{user.cpf}</dd>
+            </div>
+            <div>
+              <dt className="text-sm font-medium text-gray-500">Localização</dt>
+              <dd className="text-sm text-gray-900">{user.localizacao}</dd>
             </div>
           </dl>
-
-          <button
-            onClick={openModal}
-            className="mt-6 inline-flex items-center gap-2 bg-apple-green text-white px-4 py-2 rounded-md hover:bg-apple-green-700 transition-colors"
-          >
-            <PencilIcon className="w-5 h-5" />
-            Editar Perfil
-          </button>
         </div>
       </div>
 
+      {/* Seção do Plano */}
+      <div className="bg-white rounded-xl shadow-md p-6 space-y-6 border border-gray-100 mt-6">
+        <h2 className="text-xl font-semibold text-gray-900">
+          Plano de Assinatura
+        </h2>
+        <div className="space-y-4">
+          <div>
+            <p className="text-sm text-gray-500">Plano Atual</p>
+            <p className="text-sm text-gray-900">{user.plano}</p>
+          </div>
+          <div>
+            <p className="text-sm text-gray-500">Descrição do Plano</p>
+            <p className="text-sm text-gray-900">
+              {getPlanoDescricao(user.plano)}
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <button
+        onClick={openModal}
+        className="mt-6 inline-flex items-center gap-2 bg-apple-green text-white px-4 py-2 rounded-md hover:bg-apple-green-700 transition-colors"
+      >
+        <PencilIcon className="w-5 h-5" />
+        Editar Perfil
+      </button>
+
+      {/* Modal de Edição */}
       <Modal
         isOpen={modalOpen}
         onClose={() => setModalOpen(false)}
@@ -124,6 +182,68 @@ const Perfil: React.FC = () => {
               }
               className="mt-1 w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-apple-green focus:border-apple-green"
             />
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-gray-700">
+              Telefone
+            </label>
+            <input
+              type="text"
+              required
+              value={formData.telefone}
+              onChange={(e) =>
+                setFormData({ ...formData, telefone: e.target.value })
+              }
+              className="mt-1 w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-apple-green focus:border-apple-green"
+            />
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-gray-700">
+              CPF
+            </label>
+            <input
+              type="text"
+              required
+              value={formData.cpf}
+              onChange={(e) =>
+                setFormData({ ...formData, cpf: e.target.value })
+              }
+              className="mt-1 w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-apple-green focus:border-apple-green"
+            />
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-gray-700">
+              Localização
+            </label>
+            <input
+              type="text"
+              required
+              value={formData.localizacao}
+              onChange={(e) =>
+                setFormData({ ...formData, localizacao: e.target.value })
+              }
+              className="mt-1 w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-apple-green focus:border-apple-green"
+            />
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-gray-700">
+              Tipo de Plano
+            </label>
+            <select
+              value={formData.plano}
+              onChange={(e) =>
+                setFormData({ ...formData, plano: e.target.value })
+              }
+              className="mt-1 w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-apple-green focus:border-apple-green"
+            >
+              <option value="Free">Free</option>
+              <option value="Premium">Premium</option>
+              <option value="Enterprise">Enterprise</option>
+            </select>
           </div>
 
           <div>
