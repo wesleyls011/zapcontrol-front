@@ -1,35 +1,49 @@
-"use client"
+"use client";
 
-import type React from "react"
-import { useState, useRef, useEffect } from "react"
-import { useAuth } from "../contexts/AuthContext"
-import { ChevronDownIcon, UserIcon, Cog6ToothIcon, ArrowRightOnRectangleIcon } from "@heroicons/react/24/outline"
+import type React from "react";
+import { useState, useRef, useEffect } from "react";
+import { useAuth } from "../contexts/AuthContext";
+import { useNavigate } from "react-router-dom";
+import {
+  ChevronDownIcon,
+  UserIcon,
+  Cog6ToothIcon,
+  ArrowRightOnRectangleIcon,
+} from "@heroicons/react/24/outline";
 
 const UserMenu: React.FC = () => {
-  const { user, logout } = useAuth()
-  const [isOpen, setIsOpen] = useState(false)
-  const menuRef = useRef<HTMLDivElement>(null)
+  const { user, logout } = useAuth();
+  const [isOpen, setIsOpen] = useState(false);
+  const menuRef = useRef<HTMLDivElement>(null);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (menuRef.current && !menuRef.current.contains(event.target as Node)) {
-        setIsOpen(false)
+        setIsOpen(false);
       }
-    }
+    };
 
-    document.addEventListener("mousedown", handleClickOutside)
-    return () => document.removeEventListener("mousedown", handleClickOutside)
-  }, [])
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
 
-  if (!user) return null
+  if (!user) return null;
 
   const getRoleText = (role: string) => {
-    return role === "admin" ? "Administrador" : "Funcionário"
-  }
+    return role === "admin" ? "Administrador" : "Funcionário";
+  };
 
   const getRoleBadgeColor = (role: string) => {
-    return role === "admin" ? "bg-apple-green-100 text-apple-green-800" : "bg-blue-100 text-blue-800"
-  }
+    return role === "admin"
+      ? "bg-apple-green-100 text-apple-green-800"
+      : "bg-blue-100 text-blue-800";
+  };
+
+  const handleGoToProfile = () => {
+    setIsOpen(false);
+    navigate("/perfil");
+  };
 
   return (
     <div className="relative" ref={menuRef}>
@@ -62,7 +76,9 @@ const UserMenu: React.FC = () => {
                 <p className="text-sm font-medium text-gray-900">{user.nome}</p>
                 <p className="text-xs text-gray-500">{user.email}</p>
                 <span
-                  className={`inline-block mt-1 px-2 py-0.5 rounded-full text-xs font-medium ${getRoleBadgeColor(user.role)}`}
+                  className={`inline-block mt-1 px-2 py-0.5 rounded-full text-xs font-medium ${getRoleBadgeColor(
+                    user.role
+                  )}`}
                 >
                   {getRoleText(user.role)}
                 </span>
@@ -71,7 +87,10 @@ const UserMenu: React.FC = () => {
           </div>
 
           <div className="py-2">
-            <button className="w-full flex items-center gap-3 px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 transition-colors">
+            <button
+              onClick={handleGoToProfile}
+              className="w-full flex items-center gap-3 px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 transition-colors"
+            >
               <UserIcon className="w-4 h-4" />
               Meu Perfil
             </button>
@@ -93,7 +112,7 @@ const UserMenu: React.FC = () => {
         </div>
       )}
     </div>
-  )
-}
+  );
+};
 
-export default UserMenu
+export default UserMenu;
