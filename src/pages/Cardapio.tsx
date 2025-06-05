@@ -42,7 +42,7 @@ const Cardapio: React.FC = () => {
           preco: item.preco,
           ativo: item.ativo,
           categoria: item.categoria,
-          imagem: item.imagem ?? "",
+          imagem: item.imagemUrl ?? "",
           descricao: item.descricao ?? "",
         }))
         setItems(produtosDoCardapio)
@@ -73,7 +73,7 @@ const Cardapio: React.FC = () => {
           preco: response.data.preco,
           descricao: response.data.descricao ?? "",
           categoria: response.data.categoria,
-          imagem: response.data.imagem ?? "",
+          imagem: response.data.imagemUrl ?? "",
           ativo: response.data.ativo,
         }
         setItems([...items, newItem])
