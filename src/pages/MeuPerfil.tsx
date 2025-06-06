@@ -23,7 +23,7 @@ const Perfil: React.FC = () => {
     telefone: "(11) 98765-4321",
     cpf: "123.456.789-00",
     localizacao: "São Paulo, SP",
-    plano: "Premium",
+    plano: "Semestral",
   });
 
   const [modalOpen, setModalOpen] = useState(false);
@@ -76,12 +76,12 @@ const Perfil: React.FC = () => {
   // Função para descrever os planos
   const getPlanoDescricao = (plano: string) => {
     switch (plano) {
-      case "Free":
-        return "Plano gratuito com recursos limitados.";
-      case "Premium":
-        return "Plano pago com acesso a todos os recursos, incluindo suporte prioritário.";
-      case "Enterprise":
-        return "Plano para grandes empresas com recursos exclusivos e suporte dedicado.";
+      case "Trimestral":
+        return "Plano com assinatura de 3 meses.";
+      case "Semestral":
+        return "Plano com assinatura de 6 meses.";
+      case "Anual":
+        return "Plano com assinatura de 12 meses.";
       default:
         return "";
     }
@@ -240,9 +240,9 @@ const Perfil: React.FC = () => {
               }
               className="mt-1 w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-apple-green focus:border-apple-green"
             >
-              <option value="Free">Free</option>
-              <option value="Premium">Premium</option>
-              <option value="Enterprise">Enterprise</option>
+              <option value="Trimestral">Trimestral</option>
+              <option value="Semestral">Semestral</option>
+              <option value="Anual">Anual</option>
             </select>
           </div>
 
