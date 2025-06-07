@@ -10,7 +10,16 @@ import FormCardapio from "@/components/FormCardapio"
 interface MenuItem {
   id: number
   nome: string
-  descricao: string
+  preco: number
+  categoria: string
+  imagem: string
+  ativo: boolean
+  quantidadeEstoque?: number
+}
+
+interface FormData {
+  nome: string
+  quantidadeEstoque?: number
   preco: number
   categoria: string
   imagem: string
@@ -22,9 +31,9 @@ const Cardapio: React.FC = () => {
 
   const [modalOpen, setModalOpen] = useState(false)
   const [editingItem, setEditingItem] = useState<MenuItem | null>(null)
-  const [formData, setFormData] = useState({
+  const [formData, setFormData] = useState<FormData>({
     nome: "",
-    descricao: "",
+    quantidadeEstoque: undefined,
     preco: 0,
     categoria: "",
     imagem: "",
@@ -43,7 +52,6 @@ const Cardapio: React.FC = () => {
           ativo: item.ativo,
           categoria: item.categoria,
           imagem: item.imagemUrl ?? "",
-          descricao: item.descricao ?? "",
         }))
         setItems(produtosDoCardapio)
       } catch (error) {
@@ -65,16 +73,26 @@ const Cardapio: React.FC = () => {
         console.log("Item atualizado:", response.data)
         setItems(items.map((item) => (item.id === editingItem.id ? response.data : item)))
       } else {
-        const response = await axios.post("http://localhost:4000/cardapio", formData)
-        console.log("Item adicionado:", response.data)
+
+        const { data } = await axios.post("http://localhost:4000/cardapio/produtos", {
+          dados: {
+            nome: formData.nome,
+            preco: formData.preco,
+            categoria: formData.categoria.toUpperCase(),
+            imagemUrl: formData.imagem,
+            quantidadeEstoque: formData.categoria === "Bebida" ? formData.quantidadeEstoque : undefined,
+          },
+        })
+        console.log("Item adicionado:", data.produto)
+        const produto = data.produto
         const newItem: MenuItem = {
-          id: response.data.id,
-          nome: response.data.nome,
-          preco: response.data.preco,
-          descricao: response.data.descricao ?? "",
-          categoria: response.data.categoria,
-          imagem: response.data.imagemUrl ?? "",
-          ativo: response.data.ativo,
+          id: produto.id,
+          nome: produto.nome,
+          preco: produto.preco,
+          categoria: produto.categoria,
+          imagem: produto.imagemUrl ?? "",
+          ativo: true,
+
         }
         setItems([...items, newItem])
       }
@@ -84,7 +102,7 @@ const Cardapio: React.FC = () => {
     } finally {
       setModalOpen(false)
       setEditingItem(null)
-      setFormData({ nome: "", descricao: "", preco: 0, categoria: "", imagem: "", ativo: true })
+      setFormData({ nome: "", quantidadeEstoque: undefined, preco: 0, categoria: "", imagem: "", ativo: true })
     }
   }
 
@@ -93,7 +111,7 @@ const Cardapio: React.FC = () => {
       setEditingItem(item)
       setFormData({
         nome: item.nome,
-        descricao: item.descricao,
+        quantidadeEstoque: item.quantidadeEstoque,
         preco: item.preco,
         categoria: item.categoria,
         imagem: item.imagem,
@@ -101,7 +119,7 @@ const Cardapio: React.FC = () => {
       })
     } else {
       setEditingItem(null)
-      setFormData({ nome: "", descricao: "", preco: 0, categoria: "", imagem: "", ativo: true })
+      setFormData({ nome: "", quantidadeEstoque: 0, preco: 0, categoria: "", imagem: "", ativo: true })
     }
     setModalOpen(true)
   }
@@ -144,7 +162,6 @@ const Cardapio: React.FC = () => {
                   {item.ativo ? "Ativo" : "Inativo"}
                 </span>
               </div>
-              <p className="text-gray-600 text-sm mb-2">{item.descricao}</p>
               <div className="flex justify-between items-center mb-3">
                 <span className="text-lg font-bold text-apple-green">R$ {item.preco.toFixed(2)}</span>
                 <span className="text-sm text-office-green-800 bg-office-green-200 px-2 py-1 rounded">{item.categoria}</span>
