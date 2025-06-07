@@ -1,13 +1,14 @@
 import React from "react"
 
 interface FormData {
-  nome: string
-  quantidadeEstoque?: number | undefined
-  preco: number
-  categoria: string
-  imagem: string
-  ativo: boolean
+  nome: string;
+  quantidadeEstoque?: number;
+  preco: number;
+  categoria: string;
+  imagem: File | null;
+  ativo: boolean;
 }
+
 
 interface FormCardapioProps {
   formData: FormData
@@ -46,8 +47,8 @@ const FormCardapio: React.FC<FormCardapioProps> = ({
           <input
             type="number"
             required
-            min="0"
-            step="0.01"
+            defaultValue={formData.preco}
+            step="1"
             value={formData.preco}
             onChange={(e) => setFormData({ ...formData, preco: Number(e.target.value) })}
             className="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-apple-green focus:border-apple-green"
@@ -88,14 +89,19 @@ const FormCardapio: React.FC<FormCardapioProps> = ({
       }
 
       <div>
-        <label className="block text-sm font-medium text-gray-700">URL da Imagem</label>
+        <label className="block text-sm font-medium text-gray-700">Imagem</label>
         <input
-          type="url"
-          value={formData.imagem}
-          onChange={(e) => setFormData({ ...formData, imagem: e.target.value })}
-          placeholder="/placeholder.svg?height=200&width=200"
+          type="file"
+          accept="image/*"
+          onChange={(e) => {
+            const file = e.target.files ? e.target.files[0] : null;
+            setFormData({ ...formData, imagem: file });
+          }}
           className="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-apple-green focus:border-apple-green"
         />
+        {formData.imagem && (
+          <p className="mt-2 text-sm text-gray-500">{formData.imagem.name}</p>
+        )}
       </div>
 
       <div className="flex items-center">

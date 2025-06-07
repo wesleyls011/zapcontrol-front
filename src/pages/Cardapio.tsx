@@ -12,7 +12,7 @@ interface MenuItem {
   nome: string
   preco: number
   categoria: string
-  imagem: string
+  imagemUrl: string
   ativo: boolean
   quantidadeEstoque?: number
 }
@@ -22,7 +22,7 @@ interface FormData {
   quantidadeEstoque?: number
   preco: number
   categoria: string
-  imagem: string
+  imagem: File | null
   ativo: boolean
 }
 
@@ -36,7 +36,7 @@ const Cardapio: React.FC = () => {
     quantidadeEstoque: undefined,
     preco: 0,
     categoria: "",
-    imagem: "",
+    imagem: null,
     ativo: true,
   })
 
@@ -51,7 +51,7 @@ const Cardapio: React.FC = () => {
           preco: item.preco,
           ativo: item.ativo,
           categoria: item.categoria,
-          imagem: item.imagemUrl ?? "",
+          imagemUrl: item.imagemUrl ?? "",
         }))
         setItems(produtosDoCardapio)
       } catch (error) {
@@ -65,46 +65,73 @@ const Cardapio: React.FC = () => {
   const categorias = ["Lanche", "Bebida", "Acompanhamento", "Sobremesa", "Salgado"]
 
   const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
+    e.preventDefault();
 
     try {
-      if (editingItem) {
-        const response = await axios.put(`http://localhost:4000/cardapio/${editingItem.id}`, formData)
-        console.log("Item atualizado:", response.data)
-        setItems(items.map((item) => (item.id === editingItem.id ? response.data : item)))
-      } else {
+      const formPayload = new FormData();
+      formPayload.append("nome", formData.nome);
+      formPayload.append("preco", formData.preco.toString());
+      formPayload.append("categoria", formData.categoria.toUpperCase());
+      formPayload.append("ativo", formData.ativo ? "true" : "false");
 
-        const { data } = await axios.post("http://localhost:4000/cardapio/produtos", {
-          dados: {
-            nome: formData.nome,
-            preco: formData.preco,
-            categoria: formData.categoria.toUpperCase(),
-            imagemUrl: formData.imagem,
-            quantidadeEstoque: formData.categoria === "Bebida" ? formData.quantidadeEstoque : undefined,
-          },
-        })
-        console.log("Item adicionado:", data.produto)
-        const produto = data.produto
+      if (formData.categoria === "Bebida" && formData.quantidadeEstoque !== undefined) {
+        formPayload.append("quantidadeEstoque", formData.quantidadeEstoque.toString());
+      }
+
+      if (formData.imagem) {
+        formPayload.append("imagem", formData.imagem);
+      }
+
+      if (editingItem) {
+        const response = await axios.put(
+          `http://localhost:4000/cardapio/${editingItem.id}`,
+          formPayload,
+          {
+            headers: { "Content-Type": "multipart/form-data" },
+          }
+        );
+        setItems(items.map(item => (item.id === editingItem.id ? response.data : item)));
+        console.log("Item atualizado:", response.data);
+      } else {
+        const response = await axios.post(
+          "http://localhost:4000/cardapio/produtos",
+          formPayload,
+          {
+            headers: {
+              "Content-Type": "multipart/form-data",
+            },
+          }
+        );
+        const produto = response.data.produto;
         const newItem: MenuItem = {
           id: produto.id,
           nome: produto.nome,
           preco: produto.preco,
           categoria: produto.categoria,
-          imagem: produto.imagemUrl ?? "",
+          imagemUrl: produto.imagemUrl ?? "",
           ativo: true,
-
-        }
-        setItems([...items, newItem])
+          quantidadeEstoque: produto.quantidadeEstoque,
+        };
+        setItems([...items, newItem]);
+        console.log("Item adicionado:", produto);
       }
     } catch (error) {
-      console.error("Erro ao salvar o item:", error)
-      alert("Ocorreu um erro ao salvar o item. Por favor, tente novamente.")
+      console.error("Erro ao salvar o item:", error);
+      alert("Ocorreu um erro ao salvar o item. Por favor, tente novamente.");
     } finally {
-      setModalOpen(false)
-      setEditingItem(null)
-      setFormData({ nome: "", quantidadeEstoque: undefined, preco: 0, categoria: "", imagem: "", ativo: true })
+      setModalOpen(false);
+      setEditingItem(null);
+      setFormData({
+        nome: "",
+        quantidadeEstoque: undefined,
+        preco: 0,
+        categoria: "",
+        imagem: null,
+        ativo: true,
+      });
     }
-  }
+  };
+
 
   const openModal = (item?: MenuItem) => {
     if (item) {
@@ -114,12 +141,12 @@ const Cardapio: React.FC = () => {
         quantidadeEstoque: item.quantidadeEstoque,
         preco: item.preco,
         categoria: item.categoria,
-        imagem: item.imagem,
+        imagem: null,
         ativo: item.ativo,
       })
     } else {
       setEditingItem(null)
-      setFormData({ nome: "", quantidadeEstoque: 0, preco: 0, categoria: "", imagem: "", ativo: true })
+      setFormData({ nome: "", quantidadeEstoque: 0, preco: 0, categoria: "", imagem: null, ativo: true })
     }
     setModalOpen(true)
   }
@@ -152,7 +179,7 @@ const Cardapio: React.FC = () => {
             key={item.id}
             className={`bg-white rounded-lg shadow overflow-hidden ${!item.ativo ? "opacity-60" : ""}`}
           >
-            <img src={item.imagem || "/placeholder.svg"} alt={item.nome} className="w-full h-48 object-cover" />
+            <img src={item.imagemUrl || "/placeholder.svg"} alt={item.nome} className="w-full h-48 object-cover" />
             <div className="p-4">
               <div className="flex justify-between items-start mb-2">
                 <h3 className="text-lg font-semibold text-gray-900">{item.nome}</h3>
