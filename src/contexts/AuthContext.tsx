@@ -24,18 +24,10 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined)
 const mockUsers = [
   {
     id: "1",
-    nome: "Admin ZapControl",
-    email: "admin@zapcontrol.com",
-    password: "admin123",
+    nome: "Usuário ZapControl",
+    email: "zapcontrol@email.com",
+    password: "123456",
     role: "admin" as const,
-    avatar: "/placeholder.svg?height=40&width=40",
-  },
-  {
-    id: "2",
-    nome: "João Funcionário",
-    email: "funcionario@zapcontrol.com",
-    password: "func123",
-    role: "funcionario" as const,
     avatar: "/placeholder.svg?height=40&width=40",
   },
 ]

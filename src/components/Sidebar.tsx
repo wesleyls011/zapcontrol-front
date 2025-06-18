@@ -1,7 +1,7 @@
 "use client"
 
-import type React from "react"
-import { Link, useLocation } from "react-router-dom"
+import React from "react";
+import { Link, useLocation } from "react-router-dom";
 import {
   HomeIcon,
   CubeIcon,
@@ -9,8 +9,8 @@ import {
   ChatBubbleLeftRightIcon,
   ShoppingBagIcon,
   XMarkIcon,
-} from "@heroicons/react/24/outline"
-import UserMenu from "./UserMenu"
+} from "@heroicons/react/24/outline";
+import UserMenu from "./UserMenu";
 
 interface SidebarProps {
   isOpen: boolean
@@ -21,11 +21,11 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, setIsOpen }) => {
   const location = useLocation()
 
   const navigation = [
-    { name: "Dashboard", href: "/", icon: HomeIcon },
-    { name: "Estoque", href: "/estoque", icon: CubeIcon },
-    { name: "Cardápio", href: "/cardapio", icon: ClipboardDocumentListIcon },
-    { name: "Chat", href: "/chat", icon: ChatBubbleLeftRightIcon },
-    { name: "Pedidos", href: "/pedidos", icon: ShoppingBagIcon },
+    { name: "Dashboard", href: "/app", icon: HomeIcon },
+    { name: "Estoque", href: "/app/estoque", icon: CubeIcon },
+    { name: "Cardápio", href: "/app/cardapio", icon: ClipboardDocumentListIcon },
+    { name: "Chat", href: "/app/chat", icon: ChatBubbleLeftRightIcon },
+    { name: "Pedidos", href: "/app/pedidos", icon: ShoppingBagIcon },
   ]
 
   return (

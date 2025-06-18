@@ -1,7 +1,7 @@
 "use client"
 
-import type React from "react"
-import { useAuth } from "../contexts/AuthContext"
+import React from "react";
+import { useAuth } from "../contexts/AuthContext";
 
 const WelcomeHeader: React.FC = () => {
   const { user } = useAuth()

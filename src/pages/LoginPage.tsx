@@ -1,12 +1,14 @@
 "use client"
 
-import type React from "react"
-import { useState } from "react"
+import React, { useState } from "react";
 import { useAuth } from "../contexts/AuthContext"
 import { EyeIcon, EyeSlashIcon, ExclamationCircleIcon } from "@heroicons/react/24/outline"
 
+import { useNavigate } from 'react-router-dom'
+
 const LoginPage: React.FC = () => {
-  const { login, isLoading } = useAuth()
+  const { login, isLoading, user } = useAuth()
+  const navigate = useNavigate()
   const [formData, setFormData] = useState({
     email: "",
     password: "",
@@ -22,22 +24,19 @@ const LoginPage: React.FC = () => {
 
     if (!success) {
       setError("Email ou senha incorretos")
+    } else {
+      navigate('/app')
     }
   }
 
-  const handleDemoLogin = (userType: "admin" | "funcionario") => {
-    if (userType === "admin") {
-      setFormData({
-        email: "admin@zapcontrol.com",
-        password: "admin123",
-      })
-    } else {
-      setFormData({
-        email: "funcionario@zapcontrol.com",
-        password: "func123",
-      })
+  // Redireciona automaticamente se já estiver autenticado
+  React.useEffect(() => {
+    if (user) {
+      navigate('/app')
     }
-  }
+  }, [user, navigate])
+
+
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-magnolia to-apple-green-50">
@@ -114,35 +113,7 @@ const LoginPage: React.FC = () => {
             </button>
           </form>
 
-          <div className="mt-8 pt-6 border-t border-gray-200">
-            <p className="text-center text-sm text-gray-600 mb-4">Contas de demonstração:</p>
-            <div className="space-y-2">
-              <button
-                onClick={() => handleDemoLogin("admin")}
-                className="w-full bg-gray-100 text-gray-700 py-2 px-4 rounded-lg hover:bg-gray-200 transition-colors text-sm"
-              >
-                👨‍💼 Login como Administrador
-              </button>
-              <button
-                onClick={() => handleDemoLogin("funcionario")}
-                className="w-full bg-gray-100 text-gray-700 py-2 px-4 rounded-lg hover:bg-gray-200 transition-colors text-sm"
-              >
-                👨‍🍳 Login como Funcionário
-              </button>
-            </div>
-          </div>
 
-          <div className="mt-6 bg-gray-50 rounded-lg p-4">
-            <h4 className="text-sm font-medium text-gray-900 mb-2">Credenciais de teste:</h4>
-            <div className="text-xs text-gray-600 space-y-1">
-              <div>
-                <strong>Admin:</strong> admin@zapcontrol.com / admin123
-              </div>
-              <div>
-                <strong>Funcionário:</strong> funcionario@zapcontrol.com / func123
-              </div>
-            </div>
-          </div>
         </div>
       </div>
     </div>

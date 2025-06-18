@@ -1,9 +1,8 @@
 "use client"
 
-import type React from "react"
-import { useAuth } from "../contexts/AuthContext"
-import LoginPage from "../pages/LoginPage"
-import type { ReactNode } from "react"
+import React, { ReactNode } from "react";
+import { useAuth } from "../contexts/AuthContext";
+import LoginPage from "../pages/LoginPage";
 
 interface ProtectedRouteProps {
   children: ReactNode

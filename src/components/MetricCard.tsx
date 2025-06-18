@@ -1,5 +1,4 @@
-import type React from "react"
-import type { ReactNode } from "react"
+import React, { ReactNode } from "react";
 
 interface MetricCardProps {
   title: string

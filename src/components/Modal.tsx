@@ -1,8 +1,7 @@
 "use client"
 
-import type React from "react"
-import { XMarkIcon } from "@heroicons/react/24/outline"
-import type { ReactNode } from "react"
+import React, { ReactNode } from "react";
+import { XMarkIcon } from "@heroicons/react/24/outline";
 
 interface ModalProps {
   isOpen: boolean

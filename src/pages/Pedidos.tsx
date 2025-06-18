@@ -1,9 +1,8 @@
 "use client"
 
-import type React from "react"
-import axios from "axios"
-import { useEffect, useState } from "react"
-import { ClockIcon, CheckCircleIcon, XCircleIcon } from "@heroicons/react/24/outline"
+import React, { useEffect, useState } from "react";
+import axios from "axios";
+import { ClockIcon, CheckCircleIcon, XCircleIcon } from "@heroicons/react/24/outline";
 
 interface Pedido {
   id: number
